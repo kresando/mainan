@@ -11,7 +11,7 @@ NODE_VERSION = "18"                    # Match Node version from package.json de
 # PHP Extensions - Optimized for Laravel with Filament and Media Library
 [phases.setup]
 nixPkgs = [
-    '(php.withExtensions (pe: pe.enabled ++ [pe.gd pe.exif pe.intl pe.zip pe.curl pe.fileinfo pe.mbstring pe.xml]))',
+    'php',
     'nginx',
     'libmysqlclient',
     'phpPackages.composer',
