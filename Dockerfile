@@ -54,27 +54,27 @@ RUN npm run build
 #--------------------------------------------------------------------------
 # Stage 3: Final Runtime Image
 #--------------------------------------------------------------------------
-FROM php:8.2-fpm-bookworm
+    FROM php:8.2-fpm-bookworm
 
-LABEL maintainer="Konz <developer@domain.com>"
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx \
-    supervisor \
-    curl wget git unzip zip \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libicu-dev \
-    libgmp-dev \
-    default-mysql-client \
-    libmysqlclient-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    LABEL maintainer="Konz <developer@domain.com>"
+    
+    WORKDIR /var/www/html
+    
+    # Install system dependencies
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+        nginx \
+        supervisor \
+        curl wget git unzip zip \
+        libzip-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
+        libicu-dev \
+        libgmp-dev \
+        default-mysql-client \
+        # Ganti libmysqlclient-dev dengan libmariadb-dev
+        libmariadb-dev \
+        && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install PHP extensions needed by Laravel and Filament
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
