@@ -92,6 +92,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     exif \
     && docker-php-ext-enable opcache
 
+RUN cp /usr/local/etc/php-fpm.conf.default /usr/local/etc/php-fpm.conf \
+    && sed -i 's#;error_log = log/php-fpm.log#error_log = /proc/self/fd/2#' /usr/local/etc/php-fpm.conf \
+    && sed -i 's#;include=/usr/local/etc/php-fpm.d/\*.conf#include=/usr/local/etc/php-fpm.d/\*.conf#' /usr/local/etc/php-fpm.conf
+
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 COPY docker/php-fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/99-custom.ini
