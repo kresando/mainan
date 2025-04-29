@@ -114,7 +114,7 @@
     
     # Copy Configurations
     COPY docker/nginx.conf /etc/nginx/sites-available/default
-    COPY docker/php-fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf # <-- File ini sudah diubah
+    COPY docker/php-fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf
     COPY docker/php.ini /usr/local/etc/php/conf.d/99-custom.ini
     COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
     
