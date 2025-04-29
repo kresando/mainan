@@ -10,63 +10,67 @@
     # Set noninteractive frontend to avoid prompts
     ENV DEBIAN_FRONTEND=noninteractive
     
-    # Install necessary tools: git, zip/unzip, curl/wget, common libs
-    # dan PHP CLI + Ekstensi yang dibutuhkan untuk BUILD
-    # *** PERUBAHAN: Tambahkan ca-certificates DULU ***
+    # Install necessary tools & PHP dependencies for build
+    # Pastikan SETIAP baris (kecuali yang terakhir) diakhiri dengan backslash TANPA spasi setelahnya
     RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates \ # <-- Tambahkan ini
-        curl wget git unzip zip \
+        ca-certificates \
+        curl \
+        wget \
+        git \
+        unzip \
+        zip \
         libzip-dev \
         libpng-dev \
         libjpeg-dev \
         libfreetype6-dev \
         libicu-dev \
         libgmp-dev \
-        # Instal PHP 8.2 CLI dan ekstensi minimal
-        php8.2-cli php8.2-mbstring php8.2-xml php8.2-zip php8.2-intl php8.2-gd \
-        php8.2-gmp php8.2-bcmath php8.2-mysql php8.2-exif php8.2-curl \
-        # *** PERUBAHAN: Update certificates (opsional tapi bisa membantu) ***
-        # && update-ca-certificates --fresh \
+        php8.2-cli \
+        php8.2-mbstring \
+        php8.2-xml \
+        php8.2-zip \
+        php8.2-intl \
+        php8.2-gd \
+        php8.2-gmp \
+        php8.2-bcmath \
+        php8.2-mysql \
+        php8.2-exif \
+        php8.2-curl \
         && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
     
-    # Instal Composer secara global (sekarang curl seharusnya berhasil)
+    # Instal Composer secara global
     RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     
     WORKDIR /app
     
-    # 1. Salin hanya file composer untuk caching layer dependensi PHP
+    # 1. Copy composer files
     COPY composer.json composer.lock ./
     
-    # 2. Instal dependensi Composer TANPA menjalankan script otomatis
-    #    dan paksa driver cache/session ke 'array' untuk mencegah akses DB
+    # 2. Instal dependensi Composer TANPA script, paksa driver array
     RUN CACHE_DRIVER=array SESSION_DRIVER=array \
         composer install --no-interaction --no-plugins --no-scripts --prefer-dist --optimize-autoloader
     
-    # Bersihkan cache composer setelah instalasi
+    # Bersihkan cache composer
     RUN composer clear-cache
     
-    # 3. Salin file package manager untuk caching layer dependensi Node
+    # 3. Copy package manager files
     COPY package.json package-lock.json ./
     
     # 4. Instal dependensi Node
     RUN npm ci
     
-    # 5. Salin SISA kode aplikasi SEKARANG
+    # 5. Copy SISA kode aplikasi
     COPY . .
     
-    # 6. Jalankan script Composer (seperti package:discover) SETELAH semua kode ada
-    #    dan paksa driver cache/session lagi
+    # 6. Jalankan script Composer, paksa driver array
     RUN CACHE_DRIVER=array SESSION_DRIVER=array \
         composer run-script post-autoload-dump --no-interaction --no-dev
     
-    # 7. Build aset frontend (vendor/ sudah ada di /app/vendor)
+    # 7. Build aset frontend
     RUN npm run build
     
-    # 8. Hapus node_modules setelah build untuk mengurangi ukuran image final
+    # 8. Hapus node_modules
     RUN rm -rf node_modules
-    
-    # Opsional: Jika Anda ingin memastikan hanya dependensi non-dev composer yang ada
-    # RUN composer install --no-dev --optimize-autoloader
     
     #--------------------------------------------------------------------------
     # Stage 2: Final Runtime Image
@@ -80,23 +84,25 @@
     
     WORKDIR /var/www/html
     
-    # Install system dependencies (RUNTIME) - Nginx, Supervisor, Libs PHP
-    # *** PERUBAHAN: Tambahkan ca-certificates di sini juga, penting untuk koneksi HTTPS runtime ***
+    # Install system dependencies (RUNTIME)
+    # Pastikan SETIAP baris (kecuali yang terakhir) diakhiri dengan backslash TANPA spasi setelahnya
     RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates \ # <-- Tambahkan ini
+        ca-certificates \
         nginx \
         supervisor \
-        curl wget git unzip zip \
-        # Libs untuk ekstensi PHP Runtime
+        curl \
+        wget \
+        git \
+        unzip \
+        zip \
         libzip-dev \
         libpng-dev \
         libjpeg-dev \
         libfreetype6-dev \
         libicu-dev \
         libgmp-dev \
-        # Ganti default-mysql-client (Ubuntu) dengan mariadb-client (Debian Bookworm)
-        # Ganti libmysqlclient-dev dengan libmariadb-dev
-        mariadb-client libmariadb-dev \
+        mariadb-client \
+        libmariadb-dev \
         && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
     
     # Install PHP extensions needed by Laravel and Filament (RUNTIME)
@@ -126,7 +132,7 @@
     # Setup direktori log Supervisor
     RUN mkdir -p /var/log/supervisor
     
-    # Copy seluruh aplikasi yang sudah di-build (termasuk vendor dan public/build) dari stage build
+    # Copy aplikasi yang sudah di-build dari stage build
     COPY --chown=www-data:www-data --from=build /app /var/www/html
     
     # Pastikan direktori storage dan cache ada dan punya izin yang benar
@@ -135,7 +141,7 @@
         && chown -R www-data:www-data storage bootstrap/cache \
         && chmod -R 775 storage bootstrap/cache
     
-    # Jalankan perintah Laravel untuk optimasi RUNTIME (setelah kode ada)
+    # Jalankan perintah Laravel untuk optimasi RUNTIME
     RUN php artisan storage:link --quiet || true \
         && php artisan config:cache --quiet \
         && php artisan route:cache --quiet \
@@ -145,5 +151,5 @@
     # Expose port 80
     EXPOSE 80
     
-    # Jalankan Supervisor (yang akan menjalankan Nginx dan PHP-FPM)
+    # Jalankan Supervisor
     CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
