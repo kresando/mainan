@@ -123,7 +123,6 @@
         && rm -f /etc/nginx/sites-enabled/default \
         && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
     
-    # *** PERUBAHAN: Buat & atur izin untuk file log FPM ***
     RUN mkdir -p /var/log/supervisor \
         && touch /var/log/php-fpm.log \
         && chown www-data:www-data /var/log/php-fpm.log \
@@ -135,7 +134,6 @@
     # Setup storage, cache, and ensure log file permissions again
     RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
         && mkdir -p bootstrap/cache \
-        # *** PERUBAHAN: Pastikan file log FPM dimiliki www-data ***
         && chown -R www-data:www-data storage bootstrap/cache /var/log/php-fpm.log \
         && chmod -R 775 storage bootstrap/cache
     
