@@ -3,18 +3,30 @@
 #--------------------------------------------------------------------------
 # Stage 1: Composer Dependencies
 #--------------------------------------------------------------------------
-FROM composer:2 as vendor
+    FROM composer:2 as vendor
 
-WORKDIR /app
-
-# Copy only files needed for composer install
-COPY composer.json composer.lock ./
-
-# Install dependencies without dev, optimized for production
-RUN composer install --no-dev --no-interaction --optimize-autoloader
-
-# Clear composer cache
-RUN composer clear-cache
+    # Install system dependencies needed for intl and exif in Alpine Linux (base for composer image)
+    # Note: exif might not need extra libs on Alpine if just reading basic data
+    RUN apk add --no-cache \
+        icu-dev \  # For intl
+        libzip-dev # Often needed by composer or other extensions
+    
+    # Install the missing PHP extensions within the composer stage
+    RUN docker-php-ext-install -j$(nproc) \
+        intl \
+        exif \
+        zip
+    
+    WORKDIR /app
+    
+    # Copy only files needed for composer install
+    COPY composer.json composer.lock ./
+    
+    # Install dependencies - platform check should now pass
+    RUN composer install --no-dev --no-interaction --optimize-autoloader
+    
+    # Clear composer cache
+    RUN composer clear-cache
 
 #--------------------------------------------------------------------------
 # Stage 2: Frontend Assets
