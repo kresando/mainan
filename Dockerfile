@@ -5,24 +5,21 @@
 #--------------------------------------------------------------------------
     FROM composer:2 as vendor
 
-    # Install system dependencies needed for intl and exif in Alpine Linux (base for composer image)
-    # Note: exif might not need extra libs on Alpine if just reading basic data
-    RUN apk add --no-cache \
-        icu-dev \
-        libzip-dev
+    # Install system dependencies needed for intl and exif in Alpine Linux
+    RUN apk add --no-cache icu-dev libzip-dev
     
-    # Install the missing PHP extensions within the composer stage
-    RUN docker-php-ext-install -j$(nproc) \
-        intl \
-        exif \
-        zip 
+    # Install PHP extensions needed by packages
+    RUN docker-php-ext-install -j$(nproc) intl exif zip
     
     WORKDIR /app
     
-    # Copy only files needed for composer install
+    # Copy composer files FIRST for better caching
     COPY composer.json composer.lock ./
     
-    # Install dependencies - platform check should now pass
+    COPY . .
+    
+    # Install dependencies - platform check should now pass AND artisan scripts should run
+    # Hapus --ignore-platform-reqs jika Anda menginstal ekstensi di atas
     RUN composer install --no-dev --no-interaction --optimize-autoloader
     
     # Clear composer cache
