@@ -40,6 +40,7 @@ COPY package.json package-lock.json ./
 COPY vite.config.js ./
 COPY tailwind.config.js* ./
 COPY postcss.config.js* ./
+COPY --from=vendor /app/vendor/livewire/flux/dist ./vendor/livewire/flux/dist
 
 # Install Node dependencies
 RUN npm ci
