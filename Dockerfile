@@ -8,14 +8,14 @@
     # Install system dependencies needed for intl and exif in Alpine Linux (base for composer image)
     # Note: exif might not need extra libs on Alpine if just reading basic data
     RUN apk add --no-cache \
-        icu-dev \  # For intl
-        libzip-dev # Often needed by composer or other extensions
+        icu-dev \
+        libzip-dev
     
     # Install the missing PHP extensions within the composer stage
     RUN docker-php-ext-install -j$(nproc) \
         intl \
         exif \
-        zip
+        zip 
     
     WORKDIR /app
     
