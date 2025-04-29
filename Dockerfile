@@ -110,8 +110,7 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-RUN php artisan storage:link --quiet || true \
-    && php artisan config:cache --quiet \
+RUN php artisan config:cache --quiet \
     && php artisan route:cache --quiet \
     && php artisan view:cache --quiet \
     && php artisan event:cache --quiet
