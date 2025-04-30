@@ -78,6 +78,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgmp-dev \
     mariadb-client \
     libmariadb-dev \
+    ffmpeg \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -109,6 +110,10 @@ RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs \
     && mkdir -p bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
+
+RUN mkdir -p storage/app/public/livewire-tmp \
+    && chown -R www-data:www-data storage/app/public/livewire-tmp \
+    && chmod -R 775 storage/app/public/livewire-tmp
 
 RUN php artisan config:cache --quiet \
     && php artisan route:cache --quiet \
