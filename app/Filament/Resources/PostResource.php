@@ -60,7 +60,7 @@ class PostResource extends Resource
                                     ->image()
                                     ->directory('thumbnails')
                                     ->disk('s3')
-                                    ->visibility('public')
+                                    ->visibility('private')
                                     ->imageEditor()
                                     ->maxSize(2048) // 2MB
                             ]),
