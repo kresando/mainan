@@ -59,7 +59,7 @@ class PostResource extends Resource
                                 Forms\Components\FileUpload::make('thumbnail')
                                     ->image()
                                     ->directory('thumbnails')
-                                    ->disk('public')
+                                    ->disk('s3')
                                     ->visibility('public')
                                     ->imageEditor()
                                     ->maxSize(2048) // 2MB
@@ -121,7 +121,7 @@ class PostResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail')
-                    ->disk('public')
+                    ->disk('s3')
                     ->square()
                     ->defaultImageUrl(fn () => asset('images/placeholder.jpg')),
                 Tables\Columns\TextColumn::make('title')

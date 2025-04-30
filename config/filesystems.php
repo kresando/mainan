@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'public'),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,17 +47,18 @@ return [
             'report' => false,
         ],
 
+        // Konfigurasi S3 untuk Cloudflare R2
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'key' => env('AWS_ACCESS_KEY_ID'), // Di R2, ini adalah Access Key ID dari token API R2
+            'secret' => env('AWS_SECRET_ACCESS_KEY'), // Di R2, ini adalah Secret Access Key dari token API R2
+            'region' => env('AWS_DEFAULT_REGION', 'auto'), // R2 menggunakan 'auto' atau spesifik jika diperlukan
+            'bucket' => env('AWS_BUCKET'), // Nama bucket R2 Anda
+            'endpoint' => env('AWS_ENDPOINT'), // Endpoint R2: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+            'url' => env('AWS_URL'), // Opsional: URL publik bucket jika dikonfigurasi di R2
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false), // Biarkan false untuk R2
             'throw' => false,
-            'report' => false,
+            // 'visibility' => 'public', // Anda bisa atur visibility default di sini jika semua file public
         ],
 
     ],

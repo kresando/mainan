@@ -5,6 +5,7 @@
 .gitattributes
 
 # Development and environment files
+.env
 !.env.example
 .editorconfig
 docker-compose.yml
