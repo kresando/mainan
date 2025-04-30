@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class PostResource extends Resource
 {
@@ -56,11 +58,9 @@ class PostResource extends Resource
                             
                         Forms\Components\Section::make('Media')
                             ->schema([
-                                Forms\Components\FileUpload::make('thumbnail')
+                                SpatieMediaLibraryFileUpload::make('thumbnail')
+                                    ->collection('thumbnail')
                                     ->image()
-                                    ->directory('thumbnails')
-                                    ->disk('s3')
-                                    ->visibility('private')
                                     ->imageEditor()
                                     ->maxSize(2048) // 2MB
                             ]),
@@ -120,8 +120,8 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('thumbnail')
-                    ->disk('s3')
+                SpatieMediaLibraryImageColumn::make('thumbnail')
+                    ->collection('thumbnail')
                     ->square()
                     ->defaultImageUrl(fn () => asset('images/placeholder.jpg')),
                 Tables\Columns\TextColumn::make('title')

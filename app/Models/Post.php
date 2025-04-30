@@ -24,7 +24,6 @@ class Post extends Model implements HasMedia
         'category_id',
         'embed_link',
         'description',
-        'thumbnail',
         'views',
     ];
     
@@ -53,32 +52,6 @@ class Post extends Model implements HasMedia
     {
         $this->addMediaCollection('thumbnail')
             ->singleFile();
-    }
-    
-    // Method untuk Filament FileUpload
-    public function getThumbnailAttribute($value)
-    {
-        // Cek jika value sudah ada sebagai URL atau path
-        if ($value) {
-            // Jika sudah valid URL, gunakan langsung
-            if (filter_var($value, FILTER_VALIDATE_URL)) {
-                return $value;
-            }
-            
-            // Jika path relatif, tambahkan storage URL
-            if (is_string($value) && !str_starts_with($value, 'http')) {
-                return asset('storage/' . $value);
-            }
-        }
-        
-        // Jika nilai NULL atau tidak valid, coba dapatkan dari Spatie Media
-        $mediaUrl = $this->getFirstMediaUrl('thumbnail');
-        if ($mediaUrl) {
-            return $mediaUrl;
-        }
-        
-        // Jika semua gagal, kembalikan URL data SVG
-        return "data:image/svg+xml;base64,".base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 16 9" fill="none"><rect width="16" height="9" fill="#374151"/><path d="M7 4.5C7 4.77614 6.77614 5 6.5 5C6.22386 5 6 4.77614 6 4.5C6 4.22386 6.22386 4 6.5 4C6.77614 4 7 4.22386 7 4.5Z" fill="white"/><path d="M10 4.5C10 4.77614 9.77614 5 9.5 5C9.22386 5 9 4.77614 9 4.5C9 4.22386 9.22386 4 9.5 4C9.77614 4 10 4.22386 10 4.5Z" fill="white"/><path d="M8 7C6.5 7 6 6 6 6H10C10 6 9.5 7 8 7Z" fill="white"/></svg>');
     }
     
     // Method untuk format jumlah views agar lebih mudah dibaca
