@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException; // Import QueryException
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log; // Import Log facade jika ingin log warning
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 // use Illuminate\Support\Facades\Schema; // Uncomment jika Anda ingin menggunakan cek Schema::hasTable
 
@@ -26,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // Enable strict mode only in local environment AND not during console commands
         if ($this->app->environment('local') && !$this->app->runningInConsole()) {
             Model::shouldBeStrict();
