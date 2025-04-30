@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /livewire
+
+# Ganti URL ini jika domain produksi Anda berbeda
+# Sitemap: {{ url('/sitemap.xml') }} # Komentari atau hapus baris ini
+Sitemap: https://layar18.top/sitemap.xml # Tambahkan URL absolut

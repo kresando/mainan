@@ -21,10 +21,10 @@ class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 s
     <!-- Main Navigation Bar -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            <!-- Left: Site Title -->
+            <!-- Left: Site Logo -->
             <div class="flex-shrink-0 flex items-center">
-                <a href="{{ route('home') }}" class="text-xl font-semibold text-gray-800 dark:text-white" wire:navigate>
-                    Layar18
+                <a href="{{ route('home') }}" wire:navigate>
+                    <img src="{{ asset('images/logo.png') }}" alt="Layar18 Logo - Nonton Streaming Bokep Indo & JAV Sub Indo" class="h-9 w-auto">
                 </a>
             </div>
             

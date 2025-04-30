@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
@@ -67,17 +68,31 @@ class CategoryController extends Controller
         // Get posts with pagination
         $posts = $query->paginate(16)->withQueryString();
         
-        // Get other data for the view
-        $totalPosts = Post::count();
-        $totalViews = Post::sum('views');
+        // Get specific category stats with caching
+        $categoryStats = Cache::remember("category_stats_{$category->id}", now()->addMinutes(30), function () use ($category) {
+            // Assuming Category model has a 'posts' relationship
+            $postQuery = $category->posts(); 
+            return [
+                'totalPosts' => $postQuery->count(),
+                'totalViews' => $postQuery->sum('views')
+            ];
+        });
         
+        // -- Persiapan SEO --
+        $title = 'Kumpulan Video ' . $category->name . ' Terbaru - Layar18';
+        $description = 'Nonton dan streaming kumpulan video bokep kategori ' . $category->name . ' terbaru dan terpopuler di Layar18. ' . $categoryStats['totalPosts'] . ' video tersedia.';
+        // ----
+        
+        // Pass data SEO ke view
         return view('categories.show', [
             'category' => $category,
-            'posts' => $posts,
-            'totalPosts' => $totalPosts,
-            'totalViews' => $totalViews,
+            'posts' => $posts, // Paginator object
+            'totalPosts' => $categoryStats['totalPosts'], // Specific category total posts
+            'totalViews' => $categoryStats['totalViews'], // Specific category total views
             'timeFilter' => $timeFilter,
-            'sort' => $sort
+            'sort' => $sort,
+            'title' => $title, // Pass SEO title
+            'description' => $description // Pass SEO description
         ]);
     }
 }

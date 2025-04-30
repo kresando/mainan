@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Spatie\Tags\Tag;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -23,6 +24,12 @@ class PostController extends Controller
         
         // Increment views
         $post->increment('views');
+        
+        // -- Persiapan SEO --
+        $title = $post->title . ' - Layar18';
+        $description = 'Nonton video ' . $post->title . '. ' . Str::limit(strip_tags($post->description), 120);
+        $ogImageUrl = $post->getFirstMediaUrl('thumbnail');
+        // ----
         
         // Get related posts (same category and at least one same tag)
         $relatedPosts = Post::with(['media', 'category', 'tags'])
@@ -61,6 +68,7 @@ class PostController extends Controller
             $relatedPosts = $relatedPosts->concat($additionalPosts);
         }
             
-        return view('posts.show', compact('post', 'relatedPosts'));
+        // Pass data SEO ke view
+        return view('posts.show', compact('post', 'relatedPosts', 'title', 'description', 'ogImageUrl'));
     }
 }

@@ -141,7 +141,11 @@ class TagBrowser extends Component
         
         // Set the page title and meta description
         view()->share('title', '#' . $this->tag->name . ' - ' . config('app.name'));
-        view()->share('meta_description', 'Browse videos tagged with #' . $this->tag->name . ' - ' . $this->stats['totalPosts'] . ' videos available');
+        $tagDescription = 'Temukan koleksi video bokep dengan tag #' . $this->tag->name . ' hanya di Layar18. ';
+        if(isset($this->stats['totalPosts'])){
+            $tagDescription .= $this->stats['totalPosts'] . ' video tersedia.';
+        }
+        view()->share('meta_description', $tagDescription);
         
         return view('livewire.tag-browser', [
             'posts' => $this->posts,

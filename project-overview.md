@@ -21,3 +21,8 @@ field saat add posts:
 - thumbnail
 - link embed
 - description
+
+Seo dan Meta juga lainnya yang membuat website ini masuk halaman pertama google dan bahkan urutan pertama.
+Seo dan lainnya harus menggunakan bahasa indonesia.
+
+

@@ -5,6 +5,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\SitemapController;
 use App\Livewire\TagBrowser;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +26,6 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/tag/{slug?}', function($slug = null) {
     return view('tags.show', ['slug' => $slug]);
 })->name('tags.show');
+
+// Sitemap route
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');

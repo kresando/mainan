@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="id">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="application-name" content="{{ config('app.name', 'Layar18') }}">
 
-        <title>@yield('title', config('app.name', 'Layar18'))</title>
+        <title>@yield('title', 'Layar18 - Nonton Streaming Bokep Indo & JAV Sub Indo Terbaru')</title>
         
+        <meta name="description" content="@yield('meta_description', 'Situs nonton dan streaming video bokep viral Indonesia, JAV sub Indo, Asia, Barat terbaru ' . date('Y') . '. Update setiap hari, kualitas HD.')">
+        
+        <link rel="canonical" href="{{ url()->current() }}" />
+
         @yield('meta')
+        
+        <meta property="og:url" content="{{ url()->current() }}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="@yield('og_title', View::getSections()['title'] ?? config('app.name', 'Layar18'))" />
+        <meta property="og:description" content="@yield('og_description', View::getSections()['meta_description'] ?? 'Situs nonton dan streaming video bokep viral Indonesia, JAV sub Indo, Asia, Barat terbaru ' . date('Y') . '.')" />
+        <meta property="og:image" content="@yield('og_image', asset('images/logo-og.png'))" />
+        <meta property="og:site_name" content="{{ config('app.name', 'Layar18') }}" />
+        <meta property="og:locale" content="id_ID" />
+
+        <meta name="twitter:card" content="@yield('twitter_card', 'summary_large_image')" />
+        <meta name="twitter:title" content="@yield('twitter_title', View::getSections()['title'] ?? config('app.name', 'Layar18'))" />
+        <meta name="twitter:description" content="@yield('twitter_description', View::getSections()['meta_description'] ?? 'Situs nonton dan streaming video bokep viral Indonesia, JAV sub Indo, Asia, Barat terbaru ' . date('Y') . '.')" />
+        <meta name="twitter:image" content="@yield('twitter_image', asset('images/logo-og.png'))" />
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

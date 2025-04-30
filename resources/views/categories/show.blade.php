@@ -1,9 +1,20 @@
 @extends('layouts.app')
 
-@section('title', $category->name . ' - Layar18')
+{{-- SEO Title --}}
+@section('title', $title ?? ($category->name . ' - Layar18'))
+
+{{-- SEO Meta Description --}}
+@section('meta_description', $description ?? ('Nonton Kumpulan Video ' . $category->name . ' terbaru di Layar18.'))
 
 @section('meta')
-<meta name="description" content="{{ $category->name }} videos on Layar18 - Watch the best {{ $category->name }} content">
+    @parent {{-- Sertakan meta default dari app.blade.php --}}
+    {{-- Tambahkan meta OG/Twitter spesifik kategori jika perlu --}}
+    <meta property="og:title" content="{{ $title ?? ($category->name . ' - Layar18') }}" />
+    <meta property="og:description" content="{{ $description ?? ('Nonton Kumpulan Video ' . $category->name . ' terbaru di Layar18.') }}" />
+    {{-- Mungkin tambahkan og:image jika kategori punya gambar? --}}
+    
+    <meta name="twitter:title" content="{{ $title ?? ($category->name . ' - Layar18') }}" />
+    <meta name="twitter:description" content="{{ $description ?? ('Nonton Kumpulan Video ' . $category->name . ' terbaru di Layar18.') }}" />
 @endsection
 
 @section('content')

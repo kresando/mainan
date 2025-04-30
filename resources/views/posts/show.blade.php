@@ -1,14 +1,30 @@
 @extends('layouts.app')
 
-@section('title', $post->title . ' - Layar18')
+{{-- SEO Title --}}
+@section('title', $title)
+
+{{-- SEO Meta Description & OG/Twitter Overrides --}}
+@section('meta_description', $description)
 
 @section('meta')
-<meta name="description" content="{{ Str::limit(strip_tags($post->description), 160) }}">
-<meta property="og:title" content="{{ $post->title }} - Layar18">
-<meta property="og:description" content="{{ Str::limit(strip_tags($post->description), 160) }}">
-@if($post->thumbnail)
-<meta property="og:image" content="{{ $post->thumbnail }}">
-@endif
+    {{-- Default Meta (termasuk canonical) dari app.blade.php akan di-render di sini --}}
+    @parent 
+    
+    {{-- Open Graph Overrides --}}
+    <meta property="og:type" content="video.other" />
+    <meta property="og:title" content="{{ $title }}" />
+    <meta property="og:description" content="{{ $description }}" />
+    @if($ogImageUrl)
+    <meta property="og:image" content="{{ $ogImageUrl }}" />
+    @endif
+    
+    {{-- Twitter Card Overrides --}}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ $title }}" />
+    <meta name="twitter:description" content="{{ $description }}" />
+    @if($ogImageUrl)
+    <meta name="twitter:image" content="{{ $ogImageUrl }}" />
+    @endif
 @endsection
 
 @section('content')
@@ -134,4 +150,34 @@
         @endif
     </div>
 </div>
+
+{{-- Schema.org JSON-LD for VideoObject --}}
+@php
+    // Pastikan $ogImageUrl ada dan valid URL
+    $schemaThumbnailUrl = filter_var($ogImageUrl, FILTER_VALIDATE_URL) ? $ogImageUrl : null;
+@endphp
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "{{ addslashes($post->title) }}",
+  "description": "{{ addslashes(Str::limit(strip_tags($post->description), 250)) }}",
+  @if($schemaThumbnailUrl)
+  "thumbnailUrl": "{{ $schemaThumbnailUrl }}",
+  @endif
+  "uploadDate": "{{ $post->created_at->toIso8601String() }}",
+  "embedUrl": "{{ $post->embed_link }}",
+  "interactionStatistic": [
+    {
+      "@type": "InteractionCounter",
+      "interactionType": { "@type": "WatchAction" },
+      "userInteractionCount": {{ $post->views ?? 0 }}
+    }
+  ]
+  // "duration": "PT...M...S", // Durasi dihilangkan karena tidak tersedia
+  // "expires": "...", // Jika video punya tanggal kadaluarsa
+  // "regionsAllowed": "ID", // Jika ada pembatasan geografis
+}
+</script>
+
 @endsection 
