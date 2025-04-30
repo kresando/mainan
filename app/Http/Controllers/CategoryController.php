@@ -65,7 +65,7 @@ class CategoryController extends Controller
         }
         
         // Get posts with pagination
-        $posts = $query->paginate(24)->withQueryString();
+        $posts = $query->paginate(16)->withQueryString();
         
         // Get other data for the view
         $totalPosts = Post::count();
