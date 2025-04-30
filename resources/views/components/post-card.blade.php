@@ -7,9 +7,14 @@
         <!-- Thumbnail with overlay gradient -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
         
-        @if($post->thumbnail)
+        @php
+            // Dapatkan URL dari Spatie Media Library
+            $thumbnailUrl = $post->getFirstMediaUrl('thumbnail');
+        @endphp
+
+        @if($thumbnailUrl)
             <img 
-                src="{{ $post->thumbnail }}" 
+                src="{{ $thumbnailUrl }}" 
                 alt="{{ $post->title }}" 
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                 loading="lazy" 
