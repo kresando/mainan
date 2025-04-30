@@ -115,11 +115,6 @@ RUN mkdir -p storage/app/public/livewire-tmp \
     && chown -R www-data:www-data storage/app/public/livewire-tmp \
     && chmod -R 775 storage/app/public/livewire-tmp
 
-RUN php artisan config:cache --quiet \
-    && php artisan route:cache --quiet \
-    && php artisan view:cache --quiet \
-    && php artisan event:cache --quiet
-
 EXPOSE 80
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
