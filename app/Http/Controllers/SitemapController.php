@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class SitemapController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $sitemap = Sitemap::create();
 
@@ -74,6 +74,6 @@ class SitemapController extends Controller
         });
 
         // Generate sitemap XML response
-        return $sitemap->toResponse();
+        return $sitemap->toResponse($request);
     }
 }
