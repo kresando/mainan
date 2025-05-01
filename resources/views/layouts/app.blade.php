@@ -69,14 +69,14 @@
         {{-- Akhir Script Adsterra Popunder --}}
 
         <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-G987LP7712"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-        
-          gtag('config', 'G-G987LP7712');
-        </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2F6YF98D00"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2F6YF98D00');
+</script>
 
     </head>
     <body class="bg-white dark:bg-zinc-900 min-h-screen flex flex-col">
