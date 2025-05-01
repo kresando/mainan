@@ -5,12 +5,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
-use Spatie\Sitemap\Tags\Video;
 use App\Models\Post;
 use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class GenerateSitemap extends Command
 {
@@ -73,20 +74,36 @@ class GenerateSitemap extends Command
                 }
             }
 
-            $posts = Post::with(['category'])->get();
+            $posts = Post::with(['category', 'media' => function ($query) {
+                $query->where('collection_name', 'thumbnail');
+            }])->get();
+            $this->info("Total posts retrieved: " . $posts->count());
+
             $postRouteName = 'posts.show';
             if (!Route::has($postRouteName)) {
                  Log::error("Sitemap Generator: Fatal Error - Route '{$postRouteName}' not found. Cannot generate post URLs.");
                  $this->error("Route '{$postRouteName}' is required but not found. Aborting post URL generation.");
             } else {
+                $postCounter = 0;
                 foreach ($posts as $post) {
+                    if (!($post instanceof HasMedia)) {
+                         Log::warning("Sitemap Generator: Post ID {$post->id} does not implement HasMedia. Skipping media checks.");
+                         continue;
+                    }
+                
+                    $postCounter++;
+
                     $postUrl = secure_url(route($postRouteName, $post->slug));
 
-                    $thumbnailUrl = null;
-                    if (!empty($post->thumbnail)) {
-                        $thumbnailUrl = filter_var($post->thumbnail, FILTER_VALIDATE_URL)
-                                        ? $post->thumbnail
-                                        : secure_asset($post->thumbnail);
+                    /** @var Media|null $thumbnailMedia */
+                    $thumbnailMedia = $post->getFirstMedia('thumbnail');
+                    $thumbnailUrl = $thumbnailMedia?->getFullUrl();
+
+                    if ($postCounter <= 5) {
+                        $this->info("-- Processing Post ID: {$post->id} --");
+                        $this->info("   Embed Link Raw: " . ($post->embed_link ?? 'NULL'));
+                        $this->info("   Thumbnail Media Found: " . ($thumbnailMedia ? 'YES' : 'NO'));
+                        $this->info("   Thumbnail Final URL (from MediaLib): " . ($thumbnailUrl ?? 'NULL'));
                     }
 
                     $urlEntry = Url::create($postUrl)
@@ -95,10 +112,13 @@ class GenerateSitemap extends Command
                                    ->setPriority(0.8);
 
                     if ($thumbnailUrl) {
-                        $urlEntry->addImage($thumbnailUrl, $post->title ?? 'Gambar Post');
+                        $caption = $thumbnailMedia->getCustomProperty('caption', $post->title ?? 'Gambar Post');
+                        $urlEntry->addImage($thumbnailUrl, $caption);
                     }
 
-                    if (!empty($post->link_embed) && $thumbnailUrl) {
+                    $shouldAddVideo = false;
+                    if (!empty($post->embed_link) && $thumbnailUrl) {
+                        $shouldAddVideo = true;
                         $urlEntry->addVideo(
                             $thumbnailUrl,
                             $post->title ?? 'Video Post',
@@ -113,8 +133,12 @@ class GenerateSitemap extends Command
                                 'category' => $post->category?->name,
                             ]
                         );
-                    } elseif (!empty($post->link_embed) && !$thumbnailUrl) {
-                        Log::warning("Sitemap Generator: Post ID {$post->id} has embed link but no thumbnail. Video details skipped for sitemap.");
+                    } elseif (!empty($post->embed_link) && !$thumbnailUrl) {
+                         Log::warning("Sitemap Generator: Post ID {$post->id} has embed link but no thumbnail media found in 'thumbnail' collection. Video details skipped.");
+                    }
+
+                    if ($postCounter <= 5) {
+                        $this->info("   Should add video details? " . ($shouldAddVideo ? 'YES' : 'NO'));
                     }
 
                     $sitemap->add($urlEntry);
