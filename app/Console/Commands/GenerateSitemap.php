@@ -127,9 +127,9 @@ class GenerateSitemap extends Command
                             $postUrl,
                             [
                                 'publication_date' => ($post->created_at ?? Carbon::now())->toW3cString(),
-                                'family_friendly' => false,
-                                'requires_subscription' => false,
-                                'live' => false,
+                                'family_friendly' => 'no',
+                                'requires_subscription' => 'no',
+                                'live' => 'no',
                                 'category' => $post->category?->name,
                             ]
                         );
