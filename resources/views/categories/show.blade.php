@@ -185,4 +185,22 @@
         </div>
     </div>
 </div>
+
+{{-- Schema.org JSON-LD for CollectionPage --}}
+@php
+    $schemaDescription = addslashes($description ?? ('Nonton Kumpulan Video ' . $category->name . ' terbaru di Layar18.'));
+@endphp
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "{{ addslashes($title ?? ($category->name . ' - Layar18')) }}",
+    "description": "{{ $schemaDescription }}",
+    "url": "{{ url()->current() }}" 
+    // Anda bisa menambahkan "image" jika kategori punya gambar
+    // Anda bisa menambahkan "mainEntity" dengan type "ItemList" jika ingin 
+    // mencantumkan beberapa video pertama di halaman ini.
+}
+</script>
+
 @endsection 

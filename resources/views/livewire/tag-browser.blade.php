@@ -179,3 +179,20 @@
         </div>
     </div>
 </div>
+
+{{-- Schema.org JSON-LD for CollectionPage --}}
+@php
+    // Use the title and description shared from the component's render method
+    $schemaTitle = addslashes(View::getSections()['title'] ?? ('#' . $tag->name . ' - Layar18'));
+    $schemaDescription = addslashes(View::getSections()['meta_description'] ?? ('Nonton Kumpulan Video dengan tag #' . $tag->name . ' terbaru di Layar18.'));
+@endphp
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "{{ $schemaTitle }}",
+    "description": "{{ $schemaDescription }}",
+    "url": "{{ url()->current() }}" 
+    // Anda bisa menambahkan "image" jika tag punya gambar
+}
+</script>

@@ -41,6 +41,28 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+
+        {{-- Schema.org for Website and SearchAction --}}
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "{{ config('app.name', 'Layar18') }}",
+          "url": "{{ url('/') }}",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "{{ route('search', [
+                  'query' => '{search_term_string}'
+              ]) }}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+          // Anda bisa menambahkan "logo": "URL_LOGO_ANDA" jika ada
+        }
+        </script>
+
     </head>
     <body class="bg-white dark:bg-zinc-900 min-h-screen flex flex-col">
         <!-- Navbar -->

@@ -6,7 +6,9 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Content -->
     <div class="py-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Welcome to Layar18</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+            Layar18 - Nonton Streaming Bokep Indo &amp; JAV Sub Indo Terbaru
+        </h1>
         
         <!-- Bokep Indo Section -->
         @if(isset($indoPosts) && $indoPosts->count() > 0)
