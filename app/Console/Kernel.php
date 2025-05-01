@@ -17,6 +17,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('livewire:configure-s3-upload-cleanup')
             ->daily();
         
+        // Generate Sitemap Daily
+        $schedule->command('sitemap:generate')->dailyAt('02:00');
+        
         // Use our custom optimize command instead
         $schedule->command('app:optimize')
             ->weekly()
