@@ -63,6 +63,11 @@
         }
         </script>
 
+        {{-- Script Adsterra Popunder --}}
+        {{-- Ditempatkan di head sesuai instruksi, perhatikan potensi dampak performa --}}
+        <script type='text/javascript' src='//pl26529900.profitableratecpm.com/0c/2f/d3/0c2fd32c4011fbc526498e7b419b27bd.js'></script>
+        {{-- Akhir Script Adsterra Popunder --}}
+
     </head>
     <body class="bg-white dark:bg-zinc-900 min-h-screen flex flex-col">
         <!-- Navbar -->
@@ -77,5 +82,10 @@
         @livewire('layouts.footer')
 
         @livewireScripts
+
+        {{-- Script Adsterra Social Bar --}}
+        <script type='text/javascript' src='//pl26529952.profitableratecpm.com/d7/80/df/d780df85a9138b59d28c3cdb0740fb80.js'></script>
+        {{-- Akhir Script Adsterra Social Bar --}}
+
     </body>
 </html> 
