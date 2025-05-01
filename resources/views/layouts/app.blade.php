@@ -68,6 +68,16 @@
         <script type='text/javascript' src='//pl26529900.profitableratecpm.com/0c/2f/d3/0c2fd32c4011fbc526498e7b419b27bd.js'></script>
         {{-- Akhir Script Adsterra Popunder --}}
 
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-G987LP7712"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-G987LP7712');
+        </script>
+
     </head>
     <body class="bg-white dark:bg-zinc-900 min-h-screen flex flex-col">
         <!-- Navbar -->
