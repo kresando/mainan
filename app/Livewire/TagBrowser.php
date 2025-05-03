@@ -71,9 +71,9 @@ class TagBrowser extends Component
         // Use cache to avoid repeating the same expensive queries
         $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}";
         
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () {
+        // return Cache::remember($cacheKey, now()->addMinutes(10), function () { // <-- NONAKTIFKAN CACHE
             $query = Post::with(['media', 'category', 'tags'])
-                ->withAnyTags([$this->tag->name]);
+                ->withAnyTags([$this->tag->name]); // Akan error jika $this->tag null
             
             // Apply time filter
             switch ($this->timeFilter) {
@@ -101,8 +101,15 @@ class TagBrowser extends Component
                 //    break;
             }
             
+            // DEBUG: Lihat jumlah sebelum paginate dan data mentahnya
+            $countBeforePaginate = $query->count();
+            $rawData = $query->limit(5)->get(); // Ambil beberapa data mentah untuk dilihat
+            dump("Jumlah post sebelum paginate:", $countBeforePaginate);
+            dump("Data mentah (limit 5):", $rawData);
+            // --- AKHIR DEBUG ---
+            
             return $query->paginate(16);
-        });
+        // }); // <-- NONAKTIFKAN CACHE
     }
     
     public function getStatsProperty()
