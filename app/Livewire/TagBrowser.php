@@ -123,11 +123,12 @@ class TagBrowser extends Component
     
     public function getStatsProperty()
     {
-        $cacheKey = "tag_stats_{$this->tag->id}_{$this->timeFilter}";
-        
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () {
-            $query = Post::withAnyTags([$this->tag->name]);
-            
+        // dd('Inside getStatsProperty'); // Tambahkan dd jika perlu
+        $cacheKey = "tag_stats_{$this->tag->id}_{$this->timeFilter}"; // Akan error jika $this->tag null
+
+        // return Cache::remember($cacheKey, now()->addMinutes(30), function () { // <-- NONAKTIFKAN CACHE STATS
+            $query = Post::withAnyTags([$this->tag->name]); // Akan error jika $this->tag null
+
             // Apply time filter for stats too
             switch ($this->timeFilter) {
                 case 'today':
@@ -141,14 +142,24 @@ class TagBrowser extends Component
                     break;
             }
             
-            $totalPosts = $query->count();
-            $totalViews = $query->sum('views');
-            
+            // DEBUG STATS
+            try {
+                $totalPosts = $query->count();
+                // Clone query sebelum sum agar count tidak terpengaruh
+                $totalViews = (clone $query)->sum('views'); 
+                dump("Stats Query Results:", ['totalPosts' => $totalPosts, 'totalViews' => $totalViews]);
+            } catch (\Exception $e) {
+                dump("Error executing stats query:", $e->getMessage());
+                $totalPosts = 0;
+                $totalViews = 0;
+            }
+            // AKHIR DEBUG STATS
+
             return [
                 'totalPosts' => $totalPosts,
                 'totalViews' => $totalViews
             ];
-        });
+        // }); // <-- NONAKTIFKAN CACHE STATS
     }
     
     public function render(): View
