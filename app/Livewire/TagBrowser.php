@@ -47,6 +47,7 @@ class TagBrowser extends Component
      */
     public function loadPosts()
     {
+        dd('Inside loadPosts() - wire:init triggered');
         $this->postsLoaded = true;
     }
     
@@ -68,7 +69,6 @@ class TagBrowser extends Component
             return collect();
         }
         
-        // Use cache to avoid repeating the same expensive queries
         $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}";
         
         // return Cache::remember($cacheKey, now()->addMinutes(10), function () { // <-- NONAKTIFKAN CACHE
@@ -76,7 +76,7 @@ class TagBrowser extends Component
             $query = Post::withAnyTags([$this->tag->name]); 
 
             // dd() SEGERA setelah query dasar
-            dd("Hasil query dasar (withAnyTags saja):", $query->get());
+            // dd("Hasil query dasar (withAnyTags saja):", $query->get()); // <-- DD SEBELUMNYA DIKOMENTARI
 
             /* BAGIAN FILTER/SORT/EAGER LOADING YANG DIKOMENTARI SEMENTARA
             $query = Post::with(['media', 'category', 'tags'])
@@ -116,7 +116,8 @@ class TagBrowser extends Component
             // --- AKHIR DEBUG ---
             */
 
-            return $query->paginate(16);
+            // Kembalikan query SEMENTARA untuk menghindari error saat dd() utama dihilangkan
+            return $query->paginate(16); 
         // }); // <-- NONAKTIFKAN CACHE
     }
     
@@ -153,6 +154,8 @@ class TagBrowser extends Component
     public function render(): View
     {
         $this->isLoading = false;
+        
+        dd('Inside render() - before returning view');
         
         // Set the page title and meta description
         view()->share('title', '#' . $this->tag->name . ' - ' . config('app.name'));
