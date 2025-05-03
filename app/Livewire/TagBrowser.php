@@ -61,26 +61,21 @@ class TagBrowser extends Component
         $this->resetPage();
     }
     
+    // Computed Property untuk Posts
     public function getPostsProperty()
     {
         // Only query the database once posts have been loaded
         // This helps with initial page load performance
-        if (!$this->postsLoaded) {
-            return collect();
-        }
-        
-        $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}";
-        
-        // return Cache::remember($cacheKey, now()->addMinutes(10), function () { // <-- NONAKTIFKAN CACHE
-            // Query SANGAT disederhanakan untuk debug
-            $query = Post::withAnyTags([$this->tag->name]); 
+        // if (!$this->postsLoaded) { // <-- Nonaktifkan cek ini SEMENTARA untuk memaksa query
+        //    return collect();
+        // }
 
-            // dd() SEGERA setelah query dasar
-            // dd("Hasil query dasar (withAnyTags saja):", $query->get()); // <-- DD SEBELUMNYA DIKOMENTARI
+        $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}"; // Akan error jika $this->tag null
 
-            /* BAGIAN FILTER/SORT/EAGER LOADING YANG DIKOMENTARI SEMENTARA
+        // return Cache::remember($cacheKey, now()->addMinutes(10), function () { // <-- Cache tetap NONAKTIF
+            // KEMBALIKAN LOGIKA QUERY LENGKAP
             $query = Post::with(['media', 'category', 'tags'])
-                ->withAnyTags([$this->tag->name]); // Akan error jika $this->tag null
+                ->withAnyTags([$this->tag->name]); 
 
             // Apply time filter
             switch ($this->timeFilter) {
@@ -103,82 +98,48 @@ class TagBrowser extends Component
                 case 'views':
                     $query->orderByDesc('views');
                     break;
-                // case 'duration': // <-- Komentari atau hapus jika kolom 'duration' tidak ada di tabel 'posts'
+                // case 'duration': // <-- Tetap dikomentari
                 //    $query->orderByDesc('duration');
                 //    break;
             }
 
-            // DEBUG: Lihat jumlah sebelum paginate dan data mentahnya
-            // $countBeforePaginate = $query->count();
-            // $rawData = $query->limit(5)->get(); // Ambil beberapa data mentah untuk dilihat
-            // dump("Jumlah post sebelum paginate:", $countBeforePaginate);
-            // dump("Data mentah (limit 5):", $rawData);
-            // --- AKHIR DEBUG ---
-            */
+            // DD SEBELUM PAGINATE
+            $resultsBeforePaginate = (clone $query)->get(); // Clone agar tidak mengganggu paginate
+            dd("Inside getPostsProperty - Before Paginate", 
+               "Count:", $resultsBeforePaginate->count(), 
+               "Results:", $resultsBeforePaginate, 
+               "SQL:", $query->toSql(), 
+               "Bindings:", $query->getBindings());
 
-            // Kembalikan query SEMENTARA untuk menghindari error saat dd() utama dihilangkan
-            return $query->paginate(16); 
-        // }); // <-- NONAKTIFKAN CACHE
+            return $query->paginate(16);
+        // }); // <-- Cache tetap NONAKTIF
     }
     
-    // Computed Property untuk Stats
+    // Computed Property untuk Stats (Kembalikan ke normal, cache nonaktif)
     public function getStatsProperty()
     {
-        // dd('Inside getStatsProperty - START'); // <-- HAPUS DD DARI SINI
-
-        $cacheKey = "tag_stats_{$this->tag->id}_{$this->timeFilter}"; // Akan error jika $this->tag null
-
-        // return Cache::remember($cacheKey, now()->addMinutes(30), function () { // <-- NONAKTIFKAN CACHE STATS
-            $query = Post::withAnyTags([$this->tag->name]); // Akan error jika $this->tag null
-
-            // Apply time filter for stats too
+        $cacheKey = "tag_stats_{$this->tag->id}_{$this->timeFilter}";
+        // return Cache::remember($cacheKey, now()->addMinutes(30), function () {
+            $query = Post::withAnyTags([$this->tag->name]);
             switch ($this->timeFilter) {
-                case 'today':
-                    $query->whereDate('created_at', Carbon::today());
-                    break;
-                case 'week':
-                    $query->where('created_at', '>=', Carbon::now()->subWeek());
-                    break;
-                case 'month':
-                    $query->where('created_at', '>=', Carbon::now()->subMonth());
-                    break;
+                case 'today': $query->whereDate('created_at', Carbon::today()); break;
+                case 'week': $query->where('created_at', '>=', Carbon::now()->subWeek()); break;
+                case 'month': $query->where('created_at', '>=', Carbon::now()->subMonth()); break;
             }
-            
-            // KEMBALIKAN KE KODE NORMAL (tanpa dump/try-catch debug)
             $totalPosts = $query->count();
             $totalViews = (clone $query)->sum('views'); 
-            
             return [
                 'totalPosts' => $totalPosts,
                 'totalViews' => $totalViews
             ];
-        // }); // <-- NONAKTIFKAN CACHE STATS
+        // });
     }
     
     public function render(): View
     {
         $this->isLoading = false;
-
-        // =================== DEBUG DI RENDER ===================
-        try {
-            $statsQuery = Post::withAnyTags([$this->tag->name]);
-            // Terapkan filter waktu yang sedang aktif
-            switch ($this->timeFilter) {
-                 case 'today': $statsQuery->whereDate('created_at', Carbon::today()); break;
-                 case 'week': $statsQuery->where('created_at', '>=', Carbon::now()->subWeek()); break;
-                 case 'month': $statsQuery->where('created_at', '>=', Carbon::now()->subMonth()); break;
-            }
-            $manualCount = $statsQuery->count();
-            // Gunakan dd() di sini untuk menghentikan dan melihat hasil
-            dd('Manual stats count in render:', $manualCount, 'Tag:', $this->tag?->name, 'Time Filter:', $this->timeFilter);
-        } catch (\Exception $e) {
-            // Jika query gagal, tampilkan errornya
-            dd('Error running manual stats query in render:', $e->getMessage(), $e->getTraceAsString());
-        }
-        // ================= END DEBUG DI RENDER ==================
-
-        /*
-        // Kode render asli dikomentari sementara
+        
+        // KEMBALIKAN RENDER KE NORMAL
         view()->share('title', '#' . $this->tag->name . ' - ' . config('app.name'));
         $tagDescription = 'Temukan koleksi video bokep dengan tag #' . $this->tag->name . ' hanya di Layar18. ';
         if(isset($this->stats['totalPosts'])){
@@ -190,6 +151,5 @@ class TagBrowser extends Component
             'posts' => $this->posts,
             'stats' => $this->stats,
         ]);
-        */
     }
 }
