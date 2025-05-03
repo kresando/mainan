@@ -96,7 +96,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                                     </svg>
                                     <span>
-                                        {{ $sortOrder === 'latest' ? 'Latest' : ($sortOrder === 'views' ? 'Most Viewed' : 'Duration') }}
+                                        {{ $sortOrder === 'latest' ? 'Latest' : ($sortOrder === 'views' ? 'Most Viewed' : ($sortOrder === 'random' ? 'Random' : 'Latest')) }}
                                     </span>
                                 </span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -124,9 +124,9 @@
                                         class="block px-4 py-2.5 text-sm w-full text-left {{ $sortOrder === 'views' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-700' }}">
                                         Most Viewed
                                     </button>
-                                    <button type="button" wire:click="$set('sortOrder', 'duration')" 
-                                        class="block px-4 py-2.5 text-sm w-full text-left {{ $sortOrder === 'duration' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-700' }}">
-                                        Duration
+                                    <button type="button" wire:click="$set('sortOrder', 'random')" 
+                                        class="block px-4 py-2.5 text-sm w-full text-left {{ $sortOrder === 'random' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-700' }}">
+                                        Random
                                     </button>
                                 </div>
                             </div>

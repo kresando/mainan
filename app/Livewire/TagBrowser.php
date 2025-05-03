@@ -103,6 +103,9 @@ class TagBrowser extends Component
             case 'views':
                 $query->orderByDesc('views');
                 break;
+            case 'random':
+                $query->inRandomOrder();
+                break;
         }
 
         $posts = $query->paginate(16);
