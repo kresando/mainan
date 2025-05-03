@@ -72,9 +72,16 @@ class TagBrowser extends Component
         $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}";
         
         // return Cache::remember($cacheKey, now()->addMinutes(10), function () { // <-- NONAKTIFKAN CACHE
+            // Query SANGAT disederhanakan untuk debug
+            $query = Post::withAnyTags([$this->tag->name]); 
+
+            // dd() SEGERA setelah query dasar
+            dd("Hasil query dasar (withAnyTags saja):", $query->get());
+
+            /* BAGIAN FILTER/SORT/EAGER LOADING YANG DIKOMENTARI SEMENTARA
             $query = Post::with(['media', 'category', 'tags'])
                 ->withAnyTags([$this->tag->name]); // Akan error jika $this->tag null
-            
+
             // Apply time filter
             switch ($this->timeFilter) {
                 case 'today':
@@ -87,7 +94,7 @@ class TagBrowser extends Component
                     $query->where('created_at', '>=', Carbon::now()->subMonth());
                     break;
             }
-            
+
             // Apply sorting
             switch ($this->sortOrder) {
                 case 'latest':
@@ -100,14 +107,15 @@ class TagBrowser extends Component
                 //    $query->orderByDesc('duration');
                 //    break;
             }
-            
+
             // DEBUG: Lihat jumlah sebelum paginate dan data mentahnya
-            $countBeforePaginate = $query->count();
-            $rawData = $query->limit(5)->get(); // Ambil beberapa data mentah untuk dilihat
-            dump("Jumlah post sebelum paginate:", $countBeforePaginate);
-            dump("Data mentah (limit 5):", $rawData);
+            // $countBeforePaginate = $query->count();
+            // $rawData = $query->limit(5)->get(); // Ambil beberapa data mentah untuk dilihat
+            // dump("Jumlah post sebelum paginate:", $countBeforePaginate);
+            // dump("Data mentah (limit 5):", $rawData);
             // --- AKHIR DEBUG ---
-            
+            */
+
             return $query->paginate(16);
         // }); // <-- NONAKTIFKAN CACHE
     }
