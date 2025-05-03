@@ -96,9 +96,9 @@ class TagBrowser extends Component
                 case 'views':
                     $query->orderByDesc('views');
                     break;
-                case 'duration':
-                    $query->orderByDesc('duration');
-                    break;
+                // case 'duration': // <-- Komentari atau hapus jika kolom 'duration' tidak ada di tabel 'posts'
+                //    $query->orderByDesc('duration');
+                //    break;
             }
             
             return $query->paginate(16);
