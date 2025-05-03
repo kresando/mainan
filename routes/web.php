@@ -12,8 +12,8 @@ use Spatie\Tags\Tag;
 
 Route::get('/', WelcomeController::class)->name('home');
 
-// Route untuk post detail dengan middleware track.views
-Route::get('/posts/{post}', [PostController::class, 'show'])
+// Route untuk post detail dengan middleware track.views (menggunakan slug)
+Route::get('/posts/{post:slug}', [PostController::class, 'show'])
     ->middleware('track.views')
     ->name('posts.show');
 
