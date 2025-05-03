@@ -64,18 +64,21 @@ class TagBrowser extends Component
     // Computed Property untuk Posts
     public function getPostsProperty()
     {
-        // Only query the database once posts have been loaded
-        // This helps with initial page load performance
-        // if (!$this->postsLoaded) { // <-- Nonaktifkan cek ini SEMENTARA untuk memaksa query
-        //    return collect();
-        // }
+        // Kembalikan cek postsLoaded karena loadPosts() sekarang bekerja
+        if (!$this->postsLoaded) { 
+            return collect();
+        }
 
-        $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}"; // Akan error jika $this->tag null
+        dd("Inside getPostsProperty - START (after postsLoaded check)"); // <-- DD 1
+
+        $cacheKey = "tag_posts_{$this->tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}"; 
 
         // return Cache::remember($cacheKey, now()->addMinutes(10), function () { // <-- Cache tetap NONAKTIF
             // KEMBALIKAN LOGIKA QUERY LENGKAP
-            $query = Post::with(['media', 'category', 'tags'])
+            $query = Post::with(['media', 'category', 'tags']) // <-- Kembalikan with()
                 ->withAnyTags([$this->tag->name]); 
+
+            dd("Inside getPostsProperty - After with() and withAnyTags()"); // <-- DD 2
 
             // Apply time filter
             switch ($this->timeFilter) {
@@ -90,6 +93,8 @@ class TagBrowser extends Component
                     break;
             }
 
+            dd("Inside getPostsProperty - After time filter"); // <-- DD 3
+
             // Apply sorting
             switch ($this->sortOrder) {
                 case 'latest':
@@ -103,13 +108,7 @@ class TagBrowser extends Component
                 //    break;
             }
 
-            // DD SEBELUM PAGINATE
-            $resultsBeforePaginate = (clone $query)->get(); // Clone agar tidak mengganggu paginate
-            dd("Inside getPostsProperty - Before Paginate", 
-               "Count:", $resultsBeforePaginate->count(), 
-               "Results:", $resultsBeforePaginate, 
-               "SQL:", $query->toSql(), 
-               "Bindings:", $query->getBindings());
+            dd("Inside getPostsProperty - After sorting, before paginate"); // <-- DD 4
 
             return $query->paginate(16);
         // }); // <-- Cache tetap NONAKTIF
