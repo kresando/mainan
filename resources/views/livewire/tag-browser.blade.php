@@ -136,11 +136,15 @@
             
             <!-- Post Grid (Shown once loaded) -->
             <div wire:loading.remove>
-                @if($postsLoaded && $posts->count() > 0)
+                {{-- Periksa apakah $posts adalah Paginator dan memiliki item --}}
+                @if($postsLoaded && $posts instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator && $posts->total() > 0)
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-                        @foreach($posts as $post)
-                            <x-post-card :post="$post" />
-                        @endforeach
+                        {{-- Loop hanya jika $posts memiliki item di halaman saat ini --}}
+                        @if($posts->isNotEmpty())
+                            @foreach($posts as $post)
+                                <x-post-card :post="$post" />
+                            @endforeach
+                        @endif
                     </div>
                     
                     <!-- Pagination -->
