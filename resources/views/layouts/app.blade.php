@@ -11,6 +11,9 @@
         <meta name="description" content="@yield('meta_description', 'Situs nonton dan streaming video bokep viral Indonesia, JAV sub Indo, Asia, Barat terbaru ' . date('Y') . '. Update setiap hari, kualitas HD.')">
         
         <link rel="canonical" href="{{ url()->current() }}" />
+        
+        <!-- Favicon -->
+        <link rel="icon" href="{{ asset('images/logo.webp') }}" type="image/webp">
 
         @yield('meta')
         
@@ -72,7 +75,7 @@
         </script>
 
         {{-- Script Adsterra Popunder - deferred to not block rendering --}}
-        <script defer type='text/javascript' src='//pl26529900.profitableratecpm.com/0c/2f/d3/0c2fd32c4011fbc526498e7b419b27bd.js'></script>
+        <script defer type='text/javascript' src='//bypassduehardly.com/0c/2f/d3/0c2fd32c4011fbc526498e7b419b27bd.js'></script>
 
         <!-- Google tag (gtag.js) - deferred -->
         <script defer src="https://www.googletagmanager.com/gtag/js?id=G-2F6YF98D00"></script>
