@@ -24,7 +24,10 @@ class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 s
             <!-- Left: Site Logo -->
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ route('home') }}" wire:navigate>
-                    <img src="{{ asset('images/logo.png') }}" alt="Layar18 Logo - Nonton Streaming Bokep Indo & JAV Sub Indo" class="h-16 w-auto">
+                    <picture>
+                        <source srcset="{{ asset('images/logo.webp') }}" type="image/webp">
+                        <img src="{{ asset('images/logo.png') }}" alt="Layar18 Logo - Nonton Streaming Bokep Indo & JAV Sub Indo" class="h-16 w-auto" fetchpriority="high">
+                    </picture>
                 </a>
             </div>
             

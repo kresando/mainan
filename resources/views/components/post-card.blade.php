@@ -1,5 +1,6 @@
 @props([
     'post',
+    'isAboveTheFold' => false,
 ])
 
 <div class="group bg-white dark:bg-zinc-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:translate-y-[-4px]">
@@ -17,9 +18,8 @@
                 src="{{ $thumbnailUrl }}" 
                 alt="Nonton {{ $post->title }}"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                loading="lazy" 
+                @if(!$isAboveTheFold) loading="lazy" fetchpriority="low" @else fetchpriority="high" @endif
                 decoding="async"
-                fetchpriority="low"
                 width="360"
                 height="203"
             />

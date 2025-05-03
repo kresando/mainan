@@ -157,7 +157,7 @@
                         {{-- Loop hanya jika $posts memiliki item di halaman saat ini --}}
                         @if($posts->isNotEmpty())
                             @foreach($posts as $post)
-                                <x-post-card :post="$post" />
+                                <x-post-card :post="$post" :isAboveTheFold="$loop->index < 8" />
                             @endforeach
                         @endif
                     </div>

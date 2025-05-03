@@ -22,8 +22,8 @@
                                 </a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach($indoPosts as $post)
-                    <x-post-card :post="$post" />
+                @foreach($indoPosts->take(8) as $post)
+                    <x-post-card :post="$post" :isAboveTheFold="$loop->index < 8" />
                 @endforeach
             </div>
         @else
@@ -50,8 +50,8 @@
                 </a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach($javPosts as $post)
-                    <x-post-card :post="$post" />
+                @foreach($javPosts->take(8) as $post)
+                    <x-post-card :post="$post" :isAboveTheFold="false" />
                 @endforeach
             </div>
         @else

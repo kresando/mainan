@@ -27,9 +27,18 @@
         <meta name="twitter:description" content="@yield('twitter_description', View::getSections()['meta_description'] ?? 'Situs nonton dan streaming video bokep viral Indonesia, JAV sub Indo, Asia, Barat terbaru ' . date('Y') . '.')" />
         <meta name="twitter:image" content="@yield('twitter_image', asset('images/logo-og.png'))" />
 
-        <!-- Fonts -->
+        <!-- Preconnect to critical domains -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="preconnect" href="https://media.layar18.top" crossorigin>
+        
+        <!-- Preload logo -->
+        <link rel="preload" as="image" href="{{ asset('images/logo.webp') }}" type="image/webp">
+
+        <!-- Fonts - optimized loading -->
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+        <noscript>
+            <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet">
+        </noscript>
 
         <!-- Styles -->
         <style>
@@ -59,24 +68,20 @@
             },
             "query-input": "required name=search_term_string"
           }
-          // Anda bisa menambahkan "logo": "URL_LOGO_ANDA" jika ada
         }
         </script>
 
-        {{-- Script Adsterra Popunder --}}
-        {{-- Ditempatkan di head sesuai instruksi, perhatikan potensi dampak performa --}}
-        <script type='text/javascript' src='//pl26529900.profitableratecpm.com/0c/2f/d3/0c2fd32c4011fbc526498e7b419b27bd.js'></script>
-        {{-- Akhir Script Adsterra Popunder --}}
+        {{-- Script Adsterra Popunder - deferred to not block rendering --}}
+        <script defer type='text/javascript' src='//pl26529900.profitableratecpm.com/0c/2f/d3/0c2fd32c4011fbc526498e7b419b27bd.js'></script>
 
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2F6YF98D00"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2F6YF98D00');
-</script>
+        <!-- Google tag (gtag.js) - deferred -->
+        <script defer src="https://www.googletagmanager.com/gtag/js?id=G-2F6YF98D00"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-2F6YF98D00');
+        </script>
 
     </head>
     <body class="bg-white dark:bg-zinc-900 min-h-screen flex flex-col">
@@ -93,8 +98,8 @@
 
         @livewireScripts
 
-        {{-- Script Adsterra Social Bar --}}
-        <script type='text/javascript' src='//pl26529952.profitableratecpm.com/d7/80/df/d780df85a9138b59d28c3cdb0740fb80.js'></script>
+        {{-- Script Adsterra Social Bar - load after content is rendered --}}
+        <script defer type='text/javascript' src='//pl26529952.profitableratecpm.com/d7/80/df/d780df85a9138b59d28c3cdb0740fb80.js'></script>
         {{-- Akhir Script Adsterra Social Bar --}}
 
     </body>
