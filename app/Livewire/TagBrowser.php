@@ -121,9 +121,10 @@ class TagBrowser extends Component
         // }); // <-- NONAKTIFKAN CACHE
     }
     
+    // Computed Property untuk Stats
     public function getStatsProperty()
     {
-        dd('Inside getStatsProperty - START'); // <-- DD DI AWAL METHOD
+        // dd('Inside getStatsProperty - START'); // <-- HAPUS DD DARI SINI
 
         $cacheKey = "tag_stats_{$this->tag->id}_{$this->timeFilter}"; // Akan error jika $this->tag null
 
@@ -143,19 +144,10 @@ class TagBrowser extends Component
                     break;
             }
             
-            // DEBUG STATS
-            try {
-                $totalPosts = $query->count();
-                // Clone query sebelum sum agar count tidak terpengaruh
-                $totalViews = (clone $query)->sum('views'); 
-                dump("Stats Query Results:", ['totalPosts' => $totalPosts, 'totalViews' => $totalViews]);
-            } catch (\Exception $e) {
-                dump("Error executing stats query:", $e->getMessage());
-                $totalPosts = 0;
-                $totalViews = 0;
-            }
-            // AKHIR DEBUG STATS
-
+            // KEMBALIKAN KE KODE NORMAL (tanpa dump/try-catch debug)
+            $totalPosts = $query->count();
+            $totalViews = (clone $query)->sum('views'); 
+            
             return [
                 'totalPosts' => $totalPosts,
                 'totalViews' => $totalViews
@@ -166,20 +158,38 @@ class TagBrowser extends Component
     public function render(): View
     {
         $this->isLoading = false;
-        
-        // dd('Inside render() - before returning view'); // <-- HAPUS DD DARI SINI
-        
-        // Set the page title and meta description
+
+        // =================== DEBUG DI RENDER ===================
+        try {
+            $statsQuery = Post::withAnyTags([$this->tag->name]);
+            // Terapkan filter waktu yang sedang aktif
+            switch ($this->timeFilter) {
+                 case 'today': $statsQuery->whereDate('created_at', Carbon::today()); break;
+                 case 'week': $statsQuery->where('created_at', '>=', Carbon::now()->subWeek()); break;
+                 case 'month': $statsQuery->where('created_at', '>=', Carbon::now()->subMonth()); break;
+            }
+            $manualCount = $statsQuery->count();
+            // Gunakan dd() di sini untuk menghentikan dan melihat hasil
+            dd('Manual stats count in render:', $manualCount, 'Tag:', $this->tag?->name, 'Time Filter:', $this->timeFilter);
+        } catch (\Exception $e) {
+            // Jika query gagal, tampilkan errornya
+            dd('Error running manual stats query in render:', $e->getMessage(), $e->getTraceAsString());
+        }
+        // ================= END DEBUG DI RENDER ==================
+
+        /*
+        // Kode render asli dikomentari sementara
         view()->share('title', '#' . $this->tag->name . ' - ' . config('app.name'));
         $tagDescription = 'Temukan koleksi video bokep dengan tag #' . $this->tag->name . ' hanya di Layar18. ';
         if(isset($this->stats['totalPosts'])){
             $tagDescription .= $this->stats['totalPosts'] . ' video tersedia.';
         }
         view()->share('meta_description', $tagDescription);
-        
+
         return view('livewire.tag-browser', [
             'posts' => $this->posts,
             'stats' => $this->stats,
         ]);
+        */
     }
 }
