@@ -9,6 +9,7 @@ use Spatie\Tags\Tag;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class TagBrowser extends Component
@@ -20,7 +21,6 @@ class TagBrowser extends Component
     public $sortOrder = 'latest';
     public $isLoading = true;
     public $postsLoaded = false;
-    public $posts = [];
     
     protected $queryString = [
         'timeFilter' => ['except' => 'all', 'as' => 'time'],
@@ -54,6 +54,7 @@ class TagBrowser extends Component
     public function loadPosts()
     {
         $this->postsLoaded = true;
+        Log::info('TagBrowser: loadPosts() called, $postsLoaded = ' . ($this->postsLoaded ? 'true' : 'false'));
     }
     
     public function updatedTimeFilter()
@@ -70,13 +71,14 @@ class TagBrowser extends Component
     public function getPostsProperty()
     {
         if (!$this->postsLoaded) { 
+            Log::info('TagBrowser: getPostsProperty() called but postsLoaded is false');
             return collect();
         }
 
         $tag = $this->getTagObject();
+        Log::info("TagBrowser: getPostsProperty() loading posts for tag: {$tag->name}");
 
-        $cacheKey = "tag_posts_{$tag->id}_{$this->timeFilter}_{$this->sortOrder}_page{$this->page}"; 
-
+        // Jangan gunakan cache dulu untuk debugging
         $query = Post::with(['media', 'category', 'tags'])
             ->withAnyTags([$tag->name]); 
 
@@ -103,14 +105,16 @@ class TagBrowser extends Component
                 break;
         }
 
-        return $query->paginate(16);
+        $posts = $query->paginate(16);
+        Log::info("TagBrowser: Found {$posts->total()} posts for tag: {$tag->name}");
+        
+        return $posts;
     }
     
-    // Computed Property untuk Stats (Kembalikan ke normal, cache nonaktif)
+    // Computed Property untuk Stats
     public function getStatsProperty()
     {
         $tag = $this->getTagObject();
-        $cacheKey = "tag_stats_{$tag->id}_{$this->timeFilter}";
         $query = Post::withAnyTags([$tag->name]);
         switch ($this->timeFilter) {
             case 'today': $query->whereDate('created_at', Carbon::today()); break;
@@ -119,6 +123,8 @@ class TagBrowser extends Component
         }
         $totalPosts = $query->count();
         $totalViews = (clone $query)->sum('views'); 
+        Log::info("TagBrowser: Stats for {$tag->name}: {$totalPosts} posts, {$totalViews} views");
+        
         return [
             'totalPosts' => $totalPosts,
             'totalViews' => $totalViews
@@ -136,6 +142,12 @@ class TagBrowser extends Component
             $tagDescription .= $this->stats['totalPosts'] . ' video tersedia.';
         }
         view()->share('meta_description', $tagDescription);
+        
+        // Debug info
+        Log::info("TagBrowser: render() called for tag: {$tag->name}, postsLoaded: " . ($this->postsLoaded ? 'true' : 'false'));
+        if ($this->postsLoaded) {
+            Log::info("TagBrowser: posts count in render: " . $this->posts->count());
+        }
 
         return view('livewire.tag-browser', [
             'posts' => $this->posts,

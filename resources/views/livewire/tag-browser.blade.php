@@ -1,4 +1,19 @@
 <div wire:init="loadPosts">
+    <!-- Debug Info - Hilangkan setelah masalah teratasi -->
+    @if(config('app.debug'))
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+        <p class="font-bold">Debug Info:</p>
+        <p>PostsLoaded: {{ $postsLoaded ? 'true' : 'false' }}</p>
+        <p>Tag Name: {{ $tag->name }}</p>
+        <p>Time Filter: {{ $timeFilter }}</p>
+        <p>Sort Order: {{ $sortOrder }}</p>
+        @if($postsLoaded)
+            <p>Posts Count: {{ $posts->count() }}</p>
+            <p>Total Posts: {{ $posts->total() }}</p>
+        @endif
+    </div>
+    @endif
+    
     <div class="container max-w-7xl mx-auto px-4 py-8">
         <!-- Page Header -->
         <div class="flex flex-col gap-6 mb-10">
