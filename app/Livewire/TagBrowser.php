@@ -123,7 +123,8 @@ class TagBrowser extends Component
     
     public function getStatsProperty()
     {
-        // dd('Inside getStatsProperty'); // Tambahkan dd jika perlu
+        dd('Inside getStatsProperty - START'); // <-- DD DI AWAL METHOD
+
         $cacheKey = "tag_stats_{$this->tag->id}_{$this->timeFilter}"; // Akan error jika $this->tag null
 
         // return Cache::remember($cacheKey, now()->addMinutes(30), function () { // <-- NONAKTIFKAN CACHE STATS
@@ -166,7 +167,7 @@ class TagBrowser extends Component
     {
         $this->isLoading = false;
         
-        dd('Inside render() - before returning view');
+        // dd('Inside render() - before returning view'); // <-- HAPUS DD DARI SINI
         
         // Set the page title and meta description
         view()->share('title', '#' . $this->tag->name . ' - ' . config('app.name'));
