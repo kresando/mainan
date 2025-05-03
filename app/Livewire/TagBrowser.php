@@ -140,6 +140,7 @@ class TagBrowser extends Component
         return view('livewire.tag-browser', [
             'posts' => $this->posts,
             'stats' => $this->stats,
+            'tag' => $tag,
         ]);
     }
 }
