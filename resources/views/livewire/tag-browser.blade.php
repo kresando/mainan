@@ -1,4 +1,4 @@
-<div>
+<div wire:init="loadPosts">
     <div class="container max-w-7xl mx-auto px-4 py-8">
         <!-- Page Header -->
         <div class="flex flex-col gap-6 mb-10">
@@ -122,7 +122,7 @@
         </div>
         
         <!-- Deferred Loading Content - Using wire:init to improve initial page load -->
-        <div wire:init="loadPosts">
+        <div wire:loading.remove>
             <!-- Skeleton Loader for Posts (Shown during loading) -->
             <div wire:loading.flex class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
                 @for ($i = 0; $i < 8; $i++)
