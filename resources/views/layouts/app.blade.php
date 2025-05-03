@@ -98,9 +98,5 @@
 
         @livewireScripts
 
-        {{-- Script Adsterra Social Bar - load after content is rendered --}}
-        <script defer type='text/javascript' src='//pl26529952.profitableratecpm.com/d7/80/df/d780df85a9138b59d28c3cdb0740fb80.js'></script>
-        {{-- Akhir Script Adsterra Social Bar --}}
-
     </body>
 </html> 
