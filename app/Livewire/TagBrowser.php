@@ -47,7 +47,6 @@ class TagBrowser extends Component
      */
     public function loadPosts()
     {
-        dd('Inside loadPosts() - wire:init triggered');
         $this->postsLoaded = true;
     }
     
