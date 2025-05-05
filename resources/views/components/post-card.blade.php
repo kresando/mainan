@@ -22,6 +22,7 @@
                 decoding="async"
                 width="360"
                 height="203"
+                style="object-position: center center;"
             />
         @else
             <div class="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-zinc-700">
