@@ -4,7 +4,7 @@
 ])
 
 <div class="group bg-white dark:bg-zinc-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:translate-y-[-4px]">
-    <a href="{{ route('posts.show', $post) }}" class="block relative aspect-video overflow-hidden" wire:navigate>
+    <a href="{{ route('posts.show', $post) }}" class="block relative aspect-video overflow-hidden bg-black" wire:navigate>
         <!-- Thumbnail with overlay gradient -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
         
@@ -17,12 +17,11 @@
             <img 
                 src="{{ $thumbnailUrl }}" 
                 alt="Nonton {{ $post->title }}"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" 
                 @if(!$isAboveTheFold) loading="lazy" fetchpriority="low" @else fetchpriority="high" @endif
                 decoding="async"
                 width="360"
                 height="203"
-                style="object-position: center center;"
             />
         @else
             <div class="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-zinc-700">
